@@ -1,492 +1,944 @@
+// import React, { useState, useEffect } from 'react'
+// import { Search, ShoppingCart, User, MapPin, X } from "lucide-react"
+// import { schoolsData } from '../data/schoolsData' // Import your school data
+// import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
+
+
+// const states = {
+//   "Pennsylvania": ["Jenkintown", "Philadelphia"],
+//   "Florida": ["Land O Lakes", "Coral Gables"],
+//   "California": ["San Francisco", "Studio City"],
+//   "Massachusetts": ["Boston"],
+//   "Illinois": ["Chicago"],
+//   "Colorado": ["Lakewood"],
+//   "New York": ["New York"],
+//   "District of Columbia": ["Washington"],
+//   "Virginia": ["Richmond"]
+// }
+
+
+// const genderOptions = [
+//   { value: "Coed", label: "Coed" },
+//   { value: "Boys", label: "Boys" },
+//   { value: "Girls", label: "Girls" }
+// ]
+
+
+// // Mock UI components
+// const Input = ({ className, ...props }) => <input className={`border rounded px-3 py-2 ${className}`} {...props} />
+// const Button = ({ variant, className, children, disabled, ...props }) => (
+//   <button
+//     className={`px-4 py-2 rounded ${disabled ? 'opacity-50 cursor-not-allowed' : ''
+//       } ${variant === 'outline' ? 'border bg-white hover:bg-gray-50' : 'bg-blue-600 text-white hover:bg-blue-700'
+//       } ${className}`}
+//     disabled={disabled}
+//     {...props}
+//   >
+//     {children}
+//   </button>
+// )
+// const Select = ({ value, onValueChange, disabled, children }) => (
+//   <select
+//     value={value}
+//     onChange={e => onValueChange(e.target.value)}
+//     disabled={disabled}
+//     className="w-full border rounded px-3 py-2 bg-white"
+//   >
+//     {children}
+//   </select>
+// )
+// const Badge = ({ className, children, onClick }) => (
+//   <span className={`inline-flex items-center px-2 py-1 rounded text-sm cursor-pointer ${className}`} onClick={onClick}>
+//     {children}
+//   </span>
+// )
+
+
+// export default function SchoolList({ filters = {}, onBackToSearch, onUpdateFilters }) {
+//   const [state, setState] = useState(filters.state || '')
+//   const [city, setCity] = useState(filters.city || '')
+//   const [gender, setGender] = useState('')
+//   const [year, setYear] = useState('')
+//   const [searchTerm, setSearchTerm] = useState(filters.search || '')
+//   const [cartItems, setCartItems] = useState(new Set())
+//   const [currentPage, setCurrentPage] = useState(1)
+//   const [showFilters, setShowFilters] = useState(false)
+
+//   const itemsPerPage = 5
+
+//   useEffect(() => {
+//     setCurrentPage(1)
+//   }, [state, city, gender, year, searchTerm])
+
+//   useEffect(() => {
+//     if (filters.search && !searchTerm) {
+//       setSearchTerm(filters.search)
+//     }
+//     if (filters.state && !state) {
+//       setState(filters.state)
+//     }
+//     if (filters.city && !city) {
+//       setCity(filters.city)
+//     }
+//   }, [filters])
+
+//   const filtered = schoolsData.filter(school => (
+//     (!searchTerm || school.name.toLowerCase().includes(searchTerm.toLowerCase())
+//       || school.city.toLowerCase().includes(searchTerm.toLowerCase())
+//       || school.state.toLowerCase().includes(searchTerm.toLowerCase()))
+//     && (!state || school.state === state)
+//     && (!city || school.city === city)
+//     && (!gender || school.gender === gender)
+//     && (!year || +school.established >= +year)
+//   ))
+
+//   const totalPages = Math.ceil(filtered.length / itemsPerPage)
+//   const currentItems = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+//   const clearFilters = () => {
+//     setSearchTerm('')
+//     setState('')
+//     setCity('')
+//     setGender('')
+//     setYear('')
+//     setCurrentPage(1)
+//     onUpdateFilters({})
+//   }
+
+//   const removeFilter = (filterType) => {
+//     switch (filterType) {
+//       case 'search':
+//         setSearchTerm('')
+//         break
+//       case 'state':
+//         setState('')
+//         setCity('')
+//         break
+//       case 'city':
+//         setCity('')
+//         break
+//       case 'gender':
+//         setGender('')
+//         break
+//       case 'year':
+//         setYear('')
+//         break
+//     }
+//     setCurrentPage(1)
+//   }
+
+//   const addToCart = id => setCartItems(prev => new Set(prev).add(id))
+//   const hasFilters = searchTerm || state || city || gender || year
+
+//   const generatePageNumbers = () => {
+//     const pages = []
+//     const maxVisiblePages = 5
+
+//     if (totalPages <= maxVisiblePages) {
+//       for (let i = 1; i <= totalPages; i++) {
+//         pages.push(i)
+//       }
+//     } else {
+//       let startPage = Math.max(1, currentPage - 2)
+//       let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
+
+//       if (endPage - startPage < maxVisiblePages - 1) {
+//         startPage = Math.max(1, endPage - maxVisiblePages + 1)
+//       }
+
+//       for (let i = startPage; i <= endPage; i++) {
+//         pages.push(i)
+//       }
+//     }
+
+//     return pages
+//   }
+
+//   return (
+//     <div className="flex min-h-screen bg-gray-50 r">
+
+//       {/* Button to toggle filters dropdown */}
+//      <div className="fixed top-4 left-4 z-50 h-10 mb-10">
+//   <Button
+//     onClick={() => setShowFilters(!showFilters)}
+//     className="rounded-full px-5 py-2 text-sm w-75 relative top-5"
+//   >
+//     {showFilters ? "Hide Filters ▲" : "Show Filters ▼"}
+//   </Button>
+// </div>
+
+
+//       {/* Filters Dropdown - appears below the toggle button */}
+//       {showFilters && (
+//         <div className="fixed top-20 left-4 w-75 h-190 p-4 bg-white rounded-lg shadow-lg border border-gray-200 z-40">
+//           {/* Header */}
+//           <div className="flex items-center justify-between mb-3">
+//             <h2 className="text-lg font-bold text-gray-800">Search Options</h2>
+          
+//           </div>
+
+//           {/* State Dropdown */}
+//           <select
+//             value={state}
+//             onChange={(e) => setState(e.target.value)}
+//             className="w-full h-10 border border-gray-300 rounded-lg p-2 text-sm   mb-3"
+//           >
+//             <option value="">Select State</option>
+//             {Object.keys(states).map((st) => (
+//               <option key={st} value={st}>
+//                 {st}
+//               </option>
+//             ))}
+//           </select>
+
+//           {/* City Dropdown */}
+//           <select
+//             value={city}
+//             onChange={(e) => setCity(e.target.value)}
+//             disabled={!state}
+//             className="w-full border border-gray-300 rounded-lg p-2 text-sm  disabled:bg-gray-100 mb-3"
+//           >
+//             <option value="">Select City</option>
+//             {(states[state] || []).map((ct) => (
+//               <option key={ct} value={ct}>
+//                 {ct}
+//               </option>
+//             ))}
+//           </select>
+
+//           {/* Gender */}
+//           <select
+//             value={gender}
+//             onChange={(e) => setGender(e.target.value)}
+//             className="w-full border border-gray-300 rounded-lg p-2 text-sm  mb-3"
+//           >
+//             <option value="">Select Gender</option>
+//             {genderOptions.map((o) => (
+//               <option key={o.value} value={o.value}>
+//                 {o.label}
+//               </option>
+//             ))}
+//           </select>
+
+//           {/* Year */}
+//           <Input
+//             type="number"
+//             placeholder="Established Year (minimum)"
+//             min="1600"
+//             max="2024"
+//             value={year}
+//             onChange={(e) => setYear(e.target.value)}
+//             className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 mb-3"
+//           />
+
+//           {/* Clear Filters Button */}
+//           <Button
+//             variant="outline"
+//             onClick={clearFilters}
+//             className="w-full rounded-lg border-gray-300 hover:bg-gray-100"
+//           >
+//             Clear All Filters
+//           </Button>
+//         </div>
+//       )}
+
+//       {/* Main Content */}
+//       <main className="flex-1 p-8 ml-0 md:ml-80">
+//         {/* Search Bar */}
+//         <div className="flex items-center mb-4 space-x-4">
+//           <div className="flex flex-1 items-center bg-white border rounded-lg shadow-sm">
+//             <Input
+//               placeholder="Search for Schools / Institutions"
+//               value={searchTerm}
+//               onChange={e => setSearchTerm(e.target.value)}
+//               className="border-none flex-1 px-4 py-2 focus:outline-none"
+//             />
+//             {searchTerm && (
+//               <button
+//                 onClick={() => removeFilter('search')}
+//                 className="p-2 text-red-500 hover:text-red-700"
+//                 title="Clear search"
+//               >
+//                 <X className="h-5 w-5" />
+//               </button>
+//             )}
+//             <button className="p-2"><Search className="text-blue-600" /></button>
+//           </div>
+//           <button className="relative">
+//             <ShoppingCart className="h-10 w-10 text-blue-600 " />
+//             {cartItems.size > 0 && (
+//               <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">{cartItems.size}</span>
+//             )}
+//           </button>
+//           <Avatar className="w-10 h-10">
+//             <AvatarImage src="https://github.cm/shacn.png" />
+//   <AvatarFallback>Ma</AvatarFallback>
+// </Avatar>
+//           {/* <button><User className="h-10 w-10 text-blue-600" /></button> */}
+//         </div>
+
+//         {/* Filters Applied */}
+//         <div className="flex items-center gap-2 mb-4 flex-wrap">
+//           <span className="text-sm font-medium">Filters applied:</span>
+
+//           {searchTerm && (
+//             <Badge className="bg-yellow-100 text-yellow-800 border border-yellow-300 px-3 py-1" onClick={() => removeFilter('search')}>
+//               Search: {searchTerm}
+//               <X className="ml-2 h-3 w-3 cursor-pointer" />
+//             </Badge>
+//           )}
+//           {state && (
+//             <Badge className="bg-blue-100 text-blue-800 border border-blue-300 px-3 py-1" onClick={() => removeFilter('state')}>
+//               State: {state}
+//               <X className="ml-2 h-3 w-3 cursor-pointer" />
+//             </Badge>
+//           )}
+//           {city && (
+//             <Badge className="bg-green-100 text-green-800 border border-green-300 px-3 py-1" onClick={() => removeFilter('city')}>
+//               City: {city}
+//               <X className="ml-2 h-3 w-3 cursor-pointer" />
+//             </Badge>
+//           )}
+//           {gender && (
+//             <Badge className="bg-purple-100 text-purple-800 border border-purple-300 px-3 py-1" onClick={() => removeFilter('gender')}>
+//               Gender: {gender}
+//               <X className="ml-2 h-3 w-3 cursor-pointer" />
+//             </Badge>
+//           )}
+//           {year && (
+//             <Badge className="bg-orange-100 text-orange-800 border border-orange-300 px-3 py-1" onClick={() => removeFilter('year')}>
+//               Year ≥ {year}
+//               <X className="ml-2 h-3 w-3 cursor-pointer" />
+//             </Badge>
+//           )}
+
+//           {!hasFilters && <span className="text-sm text-gray-500">None</span>}
+//           {hasFilters && (
+//             <Button variant="outline" onClick={clearFilters} className="ml-2 text-xs">
+//               Clear all filters
+//             </Button>
+//           )}
+//         </div>
+
+//         {/* Results Count */}
+//         <div className="text-sm text-gray-600 mb-4">
+//           Showing {filtered.length} results (Page {currentPage} of {totalPages})
+//         </div>
+
+//         {/* School Cards */}
+//         <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-200 bg-white">
+//           {currentItems.length > 0 ? (
+//             currentItems.map((school, index) => (
+//               <div key={school.id} className={`${index !== currentItems.length - 1 ? 'border-b border-gray-200' : ''}`}>
+//                 <div className="p-8 flex justify-between items-start">
+//                   {/* Left */}
+//                   <div className="flex-1">
+//                     <h3 className="text-xl font-bold text-gray-900 mb-4">{school.name}</h3>
+
+//                     <div className="flex items-start text-gray-600 mb-6">
+//                       {/* Address block */}
+//                       <div className="flex items-start w-1/2 pr-6">
+//                         <MapPin className="h-4 w-4 mt-1 mr-2 flex-shrink-0" />
+//                         <div className="text-sm leading-relaxed">
+//                           <div>{school.address}</div>
+//                           <div>
+//                             {school.city}, {school.state} {school.zipCode}
+//                           </div>
+//                           <div>United States</div>
+//                         </div>
+//                       </div>
+
+//                       {/* Details block (on right side) */}
+//                       <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm w-1/2">
+//                         <div>
+//                           <span className="text-gray-500 italic">Distance:</span>{" "}
+//                           <span className="font-semibold">{school.distance} Miles</span>
+//                         </div>
+//                         <div>
+//                           <span className="text-gray-500 italic">Gender:</span>{" "}
+//                           <span className="font-semibold">{school.gender} School</span>
+//                         </div>
+//                         <div>
+//                           <span className="text-gray-500 italic">Campus Type:</span>{" "}
+//                           <span className="font-semibold">{school.type}</span>
+//                         </div>
+//                         <div>
+//                           <span className="text-gray-500 italic">School Code:</span>{" "}
+//                           <span className="font-semibold">{school.code}</span>
+//                         </div>
+//                         <div>
+//                           <span className="text-gray-500 italic">Students:</span>{" "}
+//                           <span className="font-semibold">{school.students}</span>
+//                         </div>
+//                         <div>
+//                           <span className="text-gray-500 italic">Grades:</span>{" "}
+//                           <span className="font-semibold">{school.grades}</span>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                   {/* Right */}
+//                   <div className="flex flex-col items-end space-y-3 ml-8">
+//                     <button className="text-blue-600 text-sm hover:underline">Learn More →</button>
+//                     <button className="text-blue-600 text-sm hover:underline">Go to website →</button>
+//                     <button
+//                       onClick={() => addToCart(school.id)}
+//                       className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-medium transition-colors mt-4"
+//                     >
+//                       Apply Now
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))
+//           ) : (
+//             <div className="p-12 text-center text-gray-500">
+//               <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+//               <h3 className="text-lg font-medium mb-2">No schools found</h3>
+//               <p className="mb-4">Try adjusting your search criteria or filters</p>
+//               <Button variant="outline" onClick={clearFilters}>
+//                 Clear All Filters
+//               </Button>
+//             </div>
+//           )}
+//         </div>
+
+//         {/* Pagination */}
+//         {totalPages > 1 && (
+//           <div className="flex justify-center items-center space-x-1 mt-6">
+//             <Button variant="outline" onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+//               FIRST
+//             </Button>
+//             <Button variant="outline" onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}>
+//               PREV
+//             </Button>
+//             {generatePageNumbers().map(pageNum => (
+//               <Button
+//                 key={pageNum}
+//                 variant={currentPage === pageNum ? "default" : "outline"}
+//                 onClick={() => setCurrentPage(pageNum)}
+//                 className="min-w-[40px]"
+//               >
+//                 {pageNum}
+//               </Button>
+//             ))}
+//             <Button variant="outline" onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
+//               NEXT
+//             </Button>
+//             <Button variant="outline" onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+//               LAST
+//             </Button>
+//           </div>
+//         )}
+
+//         <div className="text-center text-sm text-gray-500 mt-6">
+//           footer for company and website details
+//         </div>
+//       </main>
+//     </div>
+//   )
+// }
+
+
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader } from '../components/ui/card'
-import { Input } from '../components/ui/input'
-import { Button } from '../components/ui/button'  
-import { 
-  Search, 
-  ShoppingCart, 
-  User, 
-  MapPin, 
-  Clock, 
-  Users, 
-  GraduationCap, 
-  Filter, 
-  X, 
-  ExternalLink,
-  Check,
-  Star,
-  Award,
-  Calendar,
-  Building,
-  Heart,
-  Sparkles,
-  TrendingUp
-} from "lucide-react";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '../components/ui/select'
-import { Badge } from '../components/ui/badge'
+import { Search, ShoppingCart, User, MapPin, X, ChevronDown,Mic } from "lucide-react"
+import { schoolsData } from '../data/schoolsData' // Import your school data
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
+import { Button } from "../components/ui/button"
+import { Input } from "../components/ui/input"
+import { Badge } from "../components/ui/badge"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu"
 
-import { schoolsData,schoolTypes,states,genderOptions } from '../data/schoolsData'  // Adjust path as needed
+const states = {
+  "Pennsylvania": ["Jenkintown", "Philadelphia"],
+  "Florida": ["Land O Lakes", "Coral Gables"],
+  "California": ["San Francisco", "Studio City"],
+  "Massachusetts": ["Boston"],
+  "Illinois": ["Chicago"],
+  "Colorado": ["Lakewood"],
+  "New York": ["New York"],
+  "District of Columbia": ["Washington"],
+  "Virginia": ["Richmond"]
+}
 
+const genderOptions = [
+  { value: "Coed", label: "Coed" },
+  { value: "Boys", label: "Boys" },
+  { value: "Girls", label: "Girls" }
+]
 
-export default function SchoolList() {
-  const [state, setState] = useState('')
-  const [city, setCity] = useState('')
+export default function SchoolList({ filters = {}, onBackToSearch, onUpdateFilters }) {
+  const [state, setState] = useState(filters.state || '')
+  const [city, setCity] = useState(filters.city || '')
   const [gender, setGender] = useState('')
   const [year, setYear] = useState('')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [cartCount, setCartCount] = useState(0)
-  const [filtered, setFiltered] = useState(schoolsData)
-  const [showFilters, setShowFilters] = useState(false)
+  const [searchTerm, setSearchTerm] = useState(filters.search || '')
   const [cartItems, setCartItems] = useState(new Set())
-  const [favorites, setFavorites] = useState(new Set())
-  const [expandedId, setExpandedId] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [showFilters, setShowFilters] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // Initialize filters from URL parameters
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const searchFromUrl = urlParams.get('search')
-    const stateFromUrl = urlParams.get('state')
-    const cityFromUrl = urlParams.get('city')
-    const highlightFromUrl = urlParams.get('highlight')
-    
-    if (searchFromUrl) setSearchTerm(searchFromUrl)
-    if (stateFromUrl) setState(stateFromUrl)
-    if (cityFromUrl) setCity(cityFromUrl)
-    if (highlightFromUrl) setExpandedId(parseInt(highlightFromUrl))
-  }, [])
+  const itemsPerPage = 5
 
   useEffect(() => {
-    let list = schoolsData
-    
-    if (searchTerm) {
-      list = list.filter(school => 
-        school.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        school.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        school.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        school.state.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    }
-    
-    if (state) {
-      list = list.filter(school => school.state === state)
-    }
-    
-    if (city) {
-      list = list.filter(school => school.city === city)
-    }
-    
-    if (gender) {
-      list = list.filter(school => school.gender === gender)
-    }
-    
-    if (year) {
-      list = list.filter(school => parseInt(school.established) >= parseInt(year))
-    }
-    
-    setFiltered(list)
+    setCurrentPage(1)
   }, [state, city, gender, year, searchTerm])
 
+  useEffect(() => {
+    if (filters.search && !searchTerm) {
+      setSearchTerm(filters.search)
+    }
+    if (filters.state && !state) {
+      setState(filters.state)
+    }
+    if (filters.city && !city) {
+      setCity(filters.city)
+    }
+  }, [filters])
+
+  const filtered = schoolsData.filter(school => (
+    (!searchTerm || school.name.toLowerCase().includes(searchTerm.toLowerCase())
+      || school.city.toLowerCase().includes(searchTerm.toLowerCase())
+      || school.state.toLowerCase().includes(searchTerm.toLowerCase()))
+    && (!state || school.state === state)
+    && (!city || school.city === city)
+    && (!gender || school.gender === gender)
+    && (!year || +school.established >= +year)
+  ))
+
+  const totalPages = Math.ceil(filtered.length / itemsPerPage)
+  const currentItems = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
   const clearFilters = () => {
+    setSearchTerm('')
     setState('')
     setCity('')
     setGender('')
     setYear('')
-    setSearchTerm('')
-    setExpandedId(null)
+    setCurrentPage(1)
+    onUpdateFilters({})
   }
 
-  const addToCart = (schoolId) => {
-    if (!cartItems.has(schoolId)) {
-      setCartItems(new Set([...cartItems, schoolId]))
-      setCartCount(prev => prev + 1)
+  const removeFilter = (filterType) => {
+    switch (filterType) {
+      case 'search':
+        setSearchTerm('')
+        break
+      case 'state':
+        setState('')
+        setCity('')
+        break
+      case 'city':
+        setCity('')
+        break
+      case 'gender':
+        setGender('')
+        break
+      case 'year':
+        setYear('')
+        break
     }
+    setCurrentPage(1)
   }
 
-  const toggleDetails = (schoolId) => {
-    setExpandedId(expandedId === schoolId ? null : schoolId)
-  }
+  const addToCart = id => setCartItems(prev => new Set(prev).add(id))
+  const hasFilters = searchTerm || state || city || gender || year
 
-  const isInCart = (schoolId) => cartItems.has(schoolId)
-  const isFavorite = (schoolId) => favorites.has(schoolId)
-  const hasActiveFilters = state || city || gender || year || searchTerm
+  const generatePageNumbers = () => {
+    const pages = []
+    const maxVisiblePages = 5
 
-  const getSchoolRating = (established) => {
-    const age = 2024 - parseInt(established)
-    return Math.min(5, Math.max(3.5, (age / 50) + 3.5)).toFixed(1)
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      let startPage = Math.max(1, currentPage - 2)
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
+
+      if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1)
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i)
+      }
+    }
+
+    return pages
   }
 
   return (
-    <>
-      {/* Hero Section */}
-     
+    <div className="flex min-h-screen bg-gray-50 font-sans">
+      {/* Button to toggle filters dropdown */}
+      <div className="fixed top-4 left-4 z-50 h-10 mb-10">
+             <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium relative top-5"
+        >
+          {showFilters ? "Smart Search ▲" : "Smart Search ▼"}
+        </button>
+      </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Mobile Filter Toggle */}
-        <div className="md:hidden mb-6">
-          <Button 
-            variant="outline" 
-            onClick={() => setShowFilters(!showFilters)}
-            className="w-full justify-center border-2 hover:border-primary/50 transition-all duration-300"
+      {/* Filters Dropdown - appears below the toggle button */}
+      {showFilters && (
+        <div className="fixed top-22 left-4 w-75 h-190 p-4 bg-white rounded-lg shadow-lg border border-gray-200 z-40">
+          {/* Header */}
+          {/* <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-gray-800">Search Options</h2>
+          </div> */}
+
+          {/* State Dropdown */}
+          <Select value={state} onValueChange={setState}>
+            <SelectTrigger className="w-full h-10 rounded-lg mb-3 border-black">
+              <SelectValue placeholder="Select State" />
+            </SelectTrigger>
+            <SelectContent className="rounded-lg">
+              {Object.keys(states).map((st) => (
+                <SelectItem key={st} value={st} className="rounded-lg">
+                  {st}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* City Dropdown */}
+          <Select 
+            value={city} 
+            onValueChange={setCity}
+            disabled={!state}
           >
-            <Filter className="h-4 w-4 mr-2" />
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
+            <SelectTrigger className="w-full rounded-lg mb-3 disabled:bg-gray-100 border-black">
+              <SelectValue placeholder="Select City" />
+            </SelectTrigger>
+            <SelectContent className="rounded-lg">
+              {(states[state] || []).map((ct) => (
+                <SelectItem key={ct} value={ct} className="rounded-lg">
+                  {ct}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Gender */}
+          <Select value={gender} onValueChange={setGender}>
+            <SelectTrigger className="w-full rounded-lg mb-3 border-black">
+              <SelectValue placeholder="Select Gender" />
+            </SelectTrigger>
+            <SelectContent className="rounded-lg">
+              {genderOptions.map((o) => (
+                <SelectItem key={o.value} value={o.value} className="rounded-lg">
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Year */}
+          <Input
+            type="number"
+            placeholder="Established Year (minimum)"
+            min="1600"
+            max="2024"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            className="w-full rounded-lg mb-3 border-black"
+          />
+
+          {/* Clear Filters Button */}
+          <Button
+            variant="outline"
+            onClick={clearFilters}
+            className="w-full rounded-lg"
+          >
+            Clear All Filters
           </Button>
         </div>
+      )}
 
-        <div className="flex flex-col lg:flex-row gap-6 relative ">
-          {/* Enhanced Sidebar Filters */}
-          <aside className={`lg:w-[20%] relative ${showFilters ? 'block' : 'hidden md:block'}`}>
-            <Card className="sticky top-6 backdrop-blur-sm bg-card/95 w-70 border-0 shadow-2xl ring-1 ring-border/20 hover:shadow-xl hover:ring-primary/30 transition-all duration-300">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between ">
-                  <h3 className="text-lg font-bold flex items-center">
-                    <div className="p-2 bg-primary/10 rounded-lg mr-2">
-                      <Filter className="h-4 w-4 text-primary" />
-                    </div>
-                    Search Criteria
-                  </h3>
-                  {hasActiveFilters && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={clearFilters}
-                      className="hover:bg-destructive/10 hover:text-destructive transition-all duration-300"
-                    >
-                      <X className="h-4 w-4 mr-1" />
-                      Clear
-                    </Button>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-foreground">State</label>
-                  <Select value={state} onValueChange={(v) => { setState(v); setCity('') }}>
-                    <SelectTrigger className="border-2 hover:border-primary/50 focus:border-primary transition-all duration-300 hover:shadow-md">
-                      <SelectValue placeholder="Select State" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.keys(states).map((st) => (
-                        <SelectItem key={st} value={st}>{st}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+      {/* Main Content */}
+      <main className="flex-1 p-8 ml-0 md:ml-80">
+        {/* Search Bar */}
+        <div className="flex items-center mb-4 space-x-4">
+          <div className="flex items-center bg-white border rounded-full shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-blue-500 w-full">
+            <input
+              placeholder="Search for Schools / Institutions"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="flex-1 px-4 py-3 bg-transparent border-0 text-base focus:outline-none rounded-full"
+              style={{ border: "none" }}
+            />
+            {searchTerm && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => removeFilter('search')}
+                className="p-2 text-red-500 hover:text-red-700 rounded-lg"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            )}
+               <button className="p-2 text-gray-500 hover:text-gray-700">
+                <Mic className="h-5 w-5" />
+              </button>
+            <button variant="ghost" size="sm" className=" h-10w-10 bg-blue-700  text-white p-3 rounded-full m-1">
+              <Search className="" />
+            </button>
+          </div>
+      <div className="flex items-center gap-6 relative">
+      {/* Shopping Cart */}
+ <button
+  size="icon"
+  className="relative bg-blue-700 rounded-full w-12 h-12 flex items-center justify-center shadow hover:shadow-lg transition"
+>
+  <ShoppingCart className="h-6 w-6 text-white" />
+  {cartItems.size > 0 && (
+    <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center shadow">
+      {cartItems.size}
+    </Badge>
+  )}
+</button>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-foreground">City</label>
-                  <Select value={city} onValueChange={setCity} disabled={!state}>
-                    <SelectTrigger className="border-2 hover:border-primary/50 focus:border-primary transition-all duration-300 disabled:opacity-50 hover:shadow-md">
-                      <SelectValue placeholder="Select City" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(states[state] || []).map((ct) => (
-                        <SelectItem key={ct} value={ct}>{ct}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-foreground">Gender</label>
-                  <Select value={gender} onValueChange={setGender}>
-                    <SelectTrigger className="border-2 hover:border-primary/50 focus:border-primary transition-all duration-300 hover:shadow-md">
-                      <SelectValue placeholder="Select Gender" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {genderOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-foreground">Established Year</label>
-                  <Input
-                    placeholder="e.g. 1900"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    type="number"
-                    min="1600"
-                    max="2024"
-                    className="border-2 hover:border-primary/50 focus:border-primary transition-all duration-300 hover:shadow-md"
-                  />
-                </div>
+      {/* Avatar */}
+      <div className="relative">
+        <Avatar
+          className="h-12 w-12 bg-gray-300 flex items-center justify-center text-white font-medium cursor-pointer hover:ring-2 hover:ring-blue-500 transition"
+          onClick={() => setShowDropdown(!showDropdown)}
+        >
+          JD
+        </Avatar>
 
-                {/* Enhanced Active Filters */}
-                {hasActiveFilters && (
-                  <div className="pt-4 border-t border-border/20">
-                    <p className="text-sm font-semibold text-foreground mb-2">Active Filters:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {state && <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 cursor-pointer">{state}</Badge>}
-                      {city && <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 cursor-pointer">{city}</Badge>}
-                      {gender && <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 cursor-pointer">{gender}</Badge>}
-                      {year && <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 cursor-pointer">Est. ≥{year}</Badge>}
-                      {searchTerm && <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 cursor-pointer">Search: "{searchTerm}"</Badge>}
-                    </div>
-                  </div>
-                )}
-
-                {/* Search Stats */}
-                <div className="pt-4 border-t border-border/20">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Results found:</span>
-                    <span className="font-bold text-primary text-lg">{filtered.length}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </aside>
-
-          {/* Enhanced Main Content */}
-          <main className="flex-1 lg:w-[70%] space-y-6">
-            {/* Enhanced Header with Search */}
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-              <div className="relative flex-1 w-full">
-                <div className="relative group">
-                  <Input 
-                    placeholder="Search schools, locations, programs..." 
-                    className="pl-12 pr-4 py-3 text-base border-2 bg-card/50 backdrop-blur-sm hover:border-primary/50 focus:border-primary group-hover:shadow-lg transition-all duration-300 w-full hover:bg-primary/5"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-3 flex-shrink-0">
-                <Button variant="outline" className="relative group border-2 hover:border-primary hover:bg-primary/10 hover:shadow-lg hover:text-primary transition-all duration-300">
-                  <ShoppingCart className="h-4 w-4 mr-2 group-hover:scale-110 group-hover:text-primary transition-all duration-300" />
-                  <span className="font-semibold group-hover:text-primary">Cart</span>
-                  {cartCount > 0 && (
-                    <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary animate-pulse hover:scale-110 transition-transform duration-200">
-                      {cartCount}
-                    </Badge>
-                  )}
-                </Button>
-                <Button variant="outline" className="border-2 hover:border-primary hover:bg-primary/10 hover:shadow-lg hover:text-primary transition-all duration-300 group">
-                  <User className="h-4 w-4 mr-2 group-hover:scale-110 group-hover:text-primary transition-all duration-300" />
-                  <span className="font-semibold group-hover:text-primary">Profile</span>
-                </Button>
-              </div>
+        {/* Dropdown */}
+        {showDropdown && (
+          <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg py-2  top-14">
+            <div className="px-4 py-2 text-gray-800 hover:bg-gray-100 cursor-pointer">
+              Rohit
             </div>
-
-            {/* Enhanced Results Header */}
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                  Premium Schools
-                </h2>
-                <p className="text-muted-foreground">
-                  {filtered.length} {filtered.length === 1 ? 'institution' : 'institutions'} found
-                  {searchTerm && ` for "${searchTerm}"`}
-                </p>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-primary">Top Rated</span>
-              </div>
+            <div className="px-4 py-2 text-gray-500 hover:bg-gray-100 cursor-pointer">
+              System Admin
             </div>
+          </div>
+        )}
+      </div>
+    </div>
+        </div>
 
-            {/* Enhanced Results Grid */}
-            <div className="grid gap-6">
-              {filtered.length === 0 ? (
-                <Card className="p-12 text-center border-0 shadow-2xl bg-gradient-to-br from-card to-accent/5">
-                  <div className="text-muted-foreground space-y-4">
-                    <div className="mx-auto w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
-                      <GraduationCap className="h-10 w-10 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-bold text-foreground">No schools found</h3>
-                    <p className="text-base">Try adjusting your search criteria to find your perfect match</p>
-                    <Button onClick={clearFilters} className="mt-4">
-                      Reset Filters
-                    </Button>
-                  </div>
-                </Card>
-              ) : (
-                filtered.map((school, index) => (
-                  <Card key={school.id} className={`group hover:shadow-xl hover:border-primary/30 hover:bg-primary/5 transition-all duration-500 border ring-1 ring-border/20 hover:ring-primary/40 backdrop-blur-sm bg-card/95 hover:scale-[1.02] animation-delay-${index * 100}`}>
-                    <CardContent className="p-6">
-                      <div className="flex flex-col xl:flex-row gap-6">
-                        {/* Enhanced School Info */}
-                        <div className="flex-1 space-y-4">
-                          {/* Header with Rating */}
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-3 mb-2">
-                                <h4 
-                                  className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 hover:scale-105 transform cursor-pointer"
-                                  onClick={() => toggleDetails(school.id)}
-                                >
-                                  {school.name}
-                                </h4>
-                              </div>
-                              
-                              <p className="text-muted-foreground flex items-start space-x-2 mb-3">
-                                <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
-                                <span className="text-sm">{school.address}</span>
-                              </p>
-                            </div>
+        {/* Filters Applied */}
+        <div className="flex items-center gap-2 mb-4 flex-wrap">
+          <span className="text-sm font-medium">Filters applied:</span>
 
-                            {/* Rating Badge */}
-                            <div className="flex items-center space-x-1 bg-amber-50 px-2 py-1 rounded-full">
-                              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                              <span className="font-bold text-amber-700 text-sm">{getSchoolRating(school.established)}</span>
-                            </div>
+          {searchTerm && (
+            <Badge 
+              variant="secondary"
+              className="bg-yellow-100 text-yellow-800 border border-yellow-300 px-3 py-1 rounded-lg cursor-pointer" 
+              onClick={() => removeFilter('search')}
+            >
+              Search: {searchTerm}
+              <X className="ml-2 h-3 w-3" />
+            </Badge>
+          )}
+          {state && (
+            <Badge 
+              variant="secondary"
+              className="bg-blue-100 text-blue-800 border border-blue-300 px-3 py-1 rounded-lg cursor-pointer" 
+              onClick={() => removeFilter('state')}
+            >
+              State: {state}
+              <X className="ml-2 h-3 w-3" />
+            </Badge>
+          )}
+          {city && (
+            <Badge 
+              variant="secondary"
+              className="bg-green-100 text-green-800 border border-green-300 px-3 py-1 rounded-lg cursor-pointer" 
+              onClick={() => removeFilter('city')}
+            >
+              City: {city}
+              <X className="ml-2 h-3 w-3" />
+            </Badge>
+          )}
+          {gender && (
+            <Badge 
+              variant="secondary"
+              className="bg-purple-100 text-purple-800 border border-purple-300 px-3 py-1 rounded-lg cursor-pointer" 
+              onClick={() => removeFilter('gender')}
+            >
+              Gender: {gender}
+              <X className="ml-2 h-3 w-3" />
+            </Badge>
+          )}
+          {year && (
+            <Badge 
+              variant="secondary"
+              className="bg-orange-100 text-orange-800 border border-orange-300 px-3 py-1 rounded-lg cursor-pointer" 
+              onClick={() => removeFilter('year')}
+            >
+              Year ≥ {year}
+              <X className="ml-2 h-3 w-3" />
+            </Badge>
+          )}
+
+          {!hasFilters && <span className="text-sm text-gray-500">None</span>}
+          {hasFilters && (
+            <Button variant="outline" onClick={clearFilters} className="ml-2 text-xs rounded-lg">
+              Clear all filters
+            </Button>
+          )}
+        </div>
+
+        {/* Results Count */}
+        <div className="text-sm text-gray-600 mb-4">
+          Showing {filtered.length} results (Page {currentPage} of {totalPages})
+        </div>
+
+        {/* School Cards */}
+        <div className="rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-white">
+          {currentItems.length > 0 ? (
+            currentItems.map((school, index) => (
+              <div key={school.id} className={`${index !== currentItems.length - 1 ? 'border-b border-gray-200' : ''}`}>
+                <div className="p-8 flex justify-between items-start">
+                  {/* Left */}
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">{school.name}</h3>
+
+                    <div className="flex items-start text-gray-600 mb-6">
+                      {/* Address block */}
+                      <div className="flex items-start w-1/2 pr-6">
+                        <MapPin className="h-4 w-4 mt-1 mr-2 flex-shrink-0" />
+                        <div className="text-sm leading-relaxed">
+                          <div>{school.address}</div>
+                          <div>
+                            {school.city}, {school.state} {school.zipCode}
                           </div>
-
-                          {/* Enhanced School Details */}
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <div className="flex items-center space-x-2 p-2 bg-accent/5 rounded-lg hover:bg-primary/10 hover:border-primary/20 border transition-all duration-300">
-                              <Building className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-                              <div>
-                                <span className="text-xs text-muted-foreground">Type</span>
-                                <p className="font-semibold text-sm group-hover:text-primary transition-colors duration-200">{school.type}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center space-x-2 p-2 bg-accent/5 rounded-lg hover:bg-primary/10 hover:border-primary/20 border transition-all duration-300">
-                              <GraduationCap className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-                              <div>
-                                <span className="text-xs text-muted-foreground">Grades</span>
-                                <p className="font-semibold text-sm group-hover:text-primary transition-colors duration-200">{school.grades}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center space-x-2 p-2 bg-accent/5 rounded-lg hover:bg-primary/10 hover:border-primary/20 border transition-all duration-300">
-                              <Users className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-                              <div>
-                                <span className="text-xs text-muted-foreground">Gender</span>
-                                <p className="font-semibold text-sm group-hover:text-primary transition-colors duration-200">{school.gender}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center space-x-2 p-2 bg-accent/5 rounded-lg hover:bg-primary/10 hover:border-primary/20 border transition-all duration-300">
-                              <Award className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-                              <div>
-                                <span className="text-xs text-muted-foreground">Code</span>
-                                <p className="font-semibold text-sm group-hover:text-primary transition-colors duration-200">{school.code}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Enhanced Additional Info */}
-                          <div className="flex flex-wrap gap-4 pt-3 border-t border-border/10">
-                            <div className="flex items-center space-x-2">
-                              <Calendar className="h-3 w-3 text-primary" />
-                              <span className="text-xs text-muted-foreground">Est.</span>
-                              <span className="font-semibold text-primary text-sm">{school.established}</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Users className="h-3 w-3 text-primary" />
-                              <span className="font-semibold text-primary text-sm">{school.students}</span>
-                              <span className="text-xs text-muted-foreground">students</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Enhanced Action Section */}
-                        <div className="flex flex-col justify-between xl:w-56 space-y-4">
-                          {/* Enhanced Links */}
-                          <div className="space-y-2">
-                            <Button 
-                              variant="link" 
-                              className="text-primary hover:text-primary/80 p-0 h-auto justify-start font-semibold group/link text-sm hover:bg-primary/10 px-2 py-1 rounded transition-all duration-200"
-                              onClick={() => toggleDetails(school.id)}
-                            >
-                              <span className="group-hover/link:translate-x-1 transition-transform duration-300">
-                                {expandedId === school.id ? 'Hide Details' : 'Learn More'} →
-                              </span>
-                            </Button>
-                            <Button 
-                              variant="link" 
-                              className="text-primary hover:text-primary/80 p-0 h-auto justify-start font-semibold group/link text-sm hover:bg-primary/10 px-2 py-1 rounded transition-all duration-200"
-                              onClick={() => window.open(school.website, '_blank')}
-                            >
-                              <ExternalLink className="h-3 w-3 mr-2 group-hover/link:scale-110 transition-transform duration-300" />
-                              <span className="group-hover/link:translate-x-1 transition-transform duration-300">
-                                Visit Website →
-                              </span>
-                            </Button>
-                          </div>
-
-                          {/* Enhanced Action Buttons */}
-                          <div className="space-y-3">
-                            <Button
-                              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                              onClick={() => window.open(`/apply/${school.code}`, '_blank')}
-                            >
-                              <Award className="h-4 w-4 mr-2" />
-                              Apply Now
-                            </Button>
-                            
-                            <Button
-                              variant={isInCart(school.id) ? "secondary" : "outline"}
-                              className={`w-full py-2 font-semibold border-2 transition-all duration-300 ${
-                                isInCart(school.id) 
-                                  ? "bg-green-50 text-green-700 border-green-200 hover:bg-green-100" 
-                                  : "hover:border-primary hover:bg-primary/5 hover:shadow-lg"
-                              }`}
-                              onClick={() => addToCart(school.id)}
-                              disabled={isInCart(school.id)}
-                            >
-                              {isInCart(school.id) ? (
-                                <>
-                                  <Check className="h-4 w-4 mr-2" />
-                                  Added to Cart
-                                </>
-                              ) : (
-                                <>
-                                  <ShoppingCart className="h-4 w-4 mr-2" />
-                                  Add to Cart
-                                </>
-                              )}
-                            </Button>
-                          </div>
-
-                          {/* Enhanced Cart Indicator */}
-                          {isInCart(school.id) && (
-                            <div className="flex justify-center">
-                              <div className="relative">
-                                <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center shadow-lg">
-                                  <ShoppingCart className="h-5 w-5 text-white" />
-                                </div>
-                                <div className="absolute -top-1 -right-1 bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold animate-pulse">
-                                  1
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                          <div>United States</div>
                         </div>
                       </div>
 
-                      {/* Expandable Details Section */}
-                      {expandedId === school.id && (
-                        <div className="mt-6 pt-6 border-t border-border/20 bg-card/50 backdrop-blur-sm p-4 rounded-lg">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {Object.entries(school).map(([key, value]) => (
-                              <div key={key} className="space-y-1">
-                                <span className="text-xs text-muted-foreground uppercase">
-                                  {key.replace(/([A-Z])/g, ' $1')}
-                                </span>
-                                <p className="font-semibold text-foreground">{value}</p>
-                              </div>
-                            ))}
-                          </div>
+                      {/* Details block (on right side) */}
+                      <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm w-1/2">
+                        <div>
+                          <span className="text-gray-500 italic">Distance:</span>{" "}
+                          <span className="font-semibold">{school.distance} Miles</span>
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))
-              )}
+                        <div>
+                          <span className="text-gray-500 italic">Gender:</span>{" "}
+                          <span className="font-semibold">{school.gender} School</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 italic">Campus Type:</span>{" "}
+                          <span className="font-semibold">{school.type}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 italic">School Code:</span>{" "}
+                          <span className="font-semibold">{school.code}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 italic">Students:</span>{" "}
+                          <span className="font-semibold">{school.students}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 italic">Grades:</span>{" "}
+                          <span className="font-semibold">{school.grades}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Right */}
+                  <div className="flex flex-col items-end space-y-3 ml-8">
+                    <Button variant="link" className="text-blue-600 text-sm p-0 h-auto rounded-lg">
+                      Learn More →
+                    </Button>
+                    <Button variant="link" className="text-blue-600 text-sm p-0 h-auto rounded-lg">
+                      Go to website →
+                    </Button>
+                    <Button
+                      onClick={() => addToCart(school.id)}
+                      className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-medium transition-colors mt-4"
+                    >
+                      Apply Now
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="p-12 text-center text-gray-500">
+              <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+              <h3 className="text-lg font-medium mb-2">No schools found</h3>
+              <p className="mb-4">Try adjusting your search criteria or filters</p>
+              <Button variant="outline" onClick={clearFilters} className="rounded-lg">
+                Clear All Filters
+              </Button>
             </div>
-          </main>
+          )}
         </div>
-      </div>
-    </>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center space-x-1 mt-6">
+            <Button 
+              variant="outline" 
+              onClick={() => setCurrentPage(1)} 
+              disabled={currentPage === 1}
+              className="rounded-lg"
+            >
+              FIRST
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} 
+              disabled={currentPage === 1}
+              className="rounded-lg"
+            >
+              PREV
+            </Button>
+            {generatePageNumbers().map(pageNum => (
+              <Button
+                key={pageNum}
+                variant={currentPage === pageNum ? "default" : "outline"}
+                onClick={() => setCurrentPage(pageNum)}
+                className="min-w-[40px] rounded-lg"
+              >
+                {pageNum}
+              </Button>
+            ))}
+            <Button 
+              variant="outline" 
+              onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} 
+              disabled={currentPage === totalPages}
+              className="rounded-lg"
+            >
+              NEXT
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setCurrentPage(totalPages)} 
+              disabled={currentPage === totalPages}
+              className="rounded-lg"
+            >
+              LAST
+            </Button>
+          </div>
+        )}
+
+        {/* <div className="text-center text-sm text-gray-500 mt-6">
+          footer for company and website details
+        </div> */}
+      </main>
+    </div>
   )
 }

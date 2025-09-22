@@ -1,25 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Search from './components/Search.jsx'
-import Home from "./Pages/Home.jsx"
-import { Route, Routes } from 'react-router-dom'
-import SchoolList from './Pages/SchoolList.jsx'
-import SchoolDetail from './Pages/SchoolDetail.jsx'
+import React, { useState } from 'react'
+import SearchComponent from './components/SearchComponent'
+import SchoolList from './Pages/SchoolList'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [currentView, setCurrentView] = useState('search')
+  const [filters, setFilters] = useState({})
+
+  const handleNavigateToList = (newFilters) => {
+    setFilters(newFilters)
+    setCurrentView('list')
+  }
+
+  const handleBackToSearch = () => {
+    setCurrentView('search')
+    setFilters({})
+  }
+
+  const handleUpdateFilters = (newFilters) => {
+    setFilters(newFilters)
+  }
+
+  if (currentView === 'search') {
+    return <SearchComponent onNavigateToList={handleNavigateToList} />
+  }
 
   return (
-    <>
-     <Routes>
-      <Route path='/' element={<Home />} />
-      <Route path='/SchoolList' element={<SchoolList />} />
-        <Route path="school/:code" element={<SchoolDetail />} />
-     </Routes>
-    </>
+    <SchoolList 
+      filters={filters} 
+      onBackToSearch={handleBackToSearch}
+      onUpdateFilters={handleUpdateFilters}
+    />
   )
 }
-
-export default App
