@@ -594,7 +594,7 @@ export default function SchoolList({ filters = {}, onBackToSearch, onUpdateFilte
 
       {/* Filters Dropdown - appears below the toggle button */}
       {showFilters && (
-        <div className="fixed top-22 left-4 w-75 h-190 p-4 bg-white rounded-lg shadow-lg border border-gray-200 z-40">
+        <div className="fixed top-22 left-4 w-75  h-188 p-4 bg-white rounded-lg shadow-lg border border-black z-40 ">
           {/* Header */}
           {/* <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-bold text-gray-800">Search Options</h2>
