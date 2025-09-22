@@ -141,14 +141,14 @@ export default function SearchComponent({ onNavigateToList }) {
 
       {/* Smart Search Filter Toggle */}
       <div className="fixed top-4 left-4 z-50 mb-10">
-        <Button
+        <button
           onClick={() => setShowFilters(!showFilters)}
           aria-expanded={showFilters}
           aria-controls="smart-search-filters"
-          className="bg-blue-600 shadow-lg text-white w-80  "
+          className="bg-blue-600 shadow-lg text-white w-80 rounded-4xl h-10 "
         >
           {showFilters ? 'Smart Search ▲' : 'Smart Search ▼'}
-        </Button>
+        </button>
       </div>
 
       {/* Smart Search Sidebar */}
