@@ -246,13 +246,13 @@ export default function SearchComponent({ onNavigateToList }) {
       <header className="w-full bg-white ">
         <div className="w-full px-6 py-4 flex justify-end items-center">
           <div className="flex items-center gap-6">
-            <Button
+            <button
               variant="ghost"
               size="icon"
               className="relative bg-blue-700 rounded-full w-12 h-12 flex items-center justify-center shadow hover:shadow-lg transition"
             >
               <ShoppingCart className="h-6 w-6 text-white" />
-            </Button>
+            </button>
             <div className="relative">
               <Avatar
                 className="h-12 w-12 bg-gray-300 flex items-center justify-center border border-black text-white font-medium cursor-pointer hover:ring-2 hover:ring-blue-500 transition"
