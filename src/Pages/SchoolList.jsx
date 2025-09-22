@@ -586,7 +586,7 @@ export default function SchoolList({ filters = {}, onBackToSearch, onUpdateFilte
       <div className="fixed top-4 left-4 z-50 h-10 mb-10">
              <button
           onClick={() => setShowFilters(!showFilters)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium relative top-5"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium relative top-5 w-75"
         >
           {showFilters ? "Smart Search ▲" : "Smart Search ▼"}
         </button>
